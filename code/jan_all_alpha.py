@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """日前管线 7 个 α 的 1 月 22–31 校准费用（供图 1 重绘）。"""
 import json
 import time as _time
