@@ -1,4 +1,4 @@
-# Microgrid Procurement and Storage Scheduling under Forecast Uncertainty
+# A Forecast-Aware Computational Optimization Framework for Microgrid Procurement and Battery Scheduling with Contract Revision Costs
 ## Reproducibility package
 
 Companion code for the paper "A Forecast-Aware Computational Optimization
@@ -9,8 +9,8 @@ Revision Costs".
 - `code/`: pipeline scripts.
   - `data_build.py` rebuilds all derived 10-minute data files from the four
     official attachments (see Data provenance below).
-  - `dayahead.py` implements the day-ahead experiment (Tables 2, Figure 1).
-  - `revision.py` implements the contract-revision experiment (Tables 3-6,
+  - `dayahead.py` implements the day-ahead experiment (Table 2, Figure 1).
+  - `revision.py` implements the contract-revision experiment (Tables 3-5,
     Figure 2).
   - `revision_full.py`, `sensitivity_alpha.py`, `sensitivity_kappa.py`,
     `da_alpha_sweep.py`, `jan_all_alpha.py`, `jan_save.py`, and
