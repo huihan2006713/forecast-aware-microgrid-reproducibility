@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-"""用重跑数字重新生成图 1/2（修图例重叠、去重叠标签、高度缩小 15%）。"""
 import json
 from pathlib import Path
 import matplotlib
