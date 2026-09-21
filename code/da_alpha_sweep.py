@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """D3 日前 α 敏感性：α∈{0.80,0.85,0.90} 的 1 月校准（1/22–31）与 334 天评估。"""
 import json
 import time as _time
