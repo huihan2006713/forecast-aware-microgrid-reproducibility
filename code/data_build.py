@@ -1,16 +1,3 @@
-# -*- coding: utf-8 -*-
-"""阶段A：从 C题附件重建处理后的数据 CSV。
-
-输出（mg_repro/data/）：
-- q1_processed.csv        附件1 单日分时电价/负载/光伏预测（144 段，右端点 0:10..24:00）
-- actual_10min_processed.csv  2025 全年：date, load_kWh, pv_kWh, price_fixed, price_rt
-                              （kW 值 /6 换算为 10 分钟电量；price_fixed=附件1 每日重复，
-                               price_rt=附件4 实时电价）
-- forecast_10min_causal.csv   附件3 小时光伏预报插值到 10 分钟边界（论文 4.1 节方法：
-                              以最近完成的实际光伏观测为插值锚点，相邻边界功率平均后
-                              换算为区间电量），列 interval_start, pv_forecast_kWh,
-                              issue_time
-"""
 from pathlib import Path
 import numpy as np
 import pandas as pd
