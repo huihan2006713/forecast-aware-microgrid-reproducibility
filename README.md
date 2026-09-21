@@ -17,7 +17,9 @@ Revision Costs".
     `stats_two_release.py` run the full evaluation, the sensitivity sweeps,
     January checks, and the solver statistics.
   - `regen_figs.py` regenerates Figures 1-2.
-- `results/`: derived results (JSON/CSV) used in the manuscript.
+- `results/`: derived results (JSON/CSV) used in the manuscript, including
+  `tariff_schedule_144.csv`, the complete 10-minute tariff reported by the
+  benchmark.
 - `hashes.json`: SHA-256 hashes of the four official attachments and of the
   derived data files.
 - `requirements.txt`: pinned dependencies.
@@ -58,7 +60,7 @@ original competition records.
    ```
 
 Processed data are written to `data/`, numerical outputs to `results/`, and
-figures to `figures/`. The printed totals reproduce Tables 2-7 and Figures 1-2
+figures to `figures/`. The printed totals reproduce Tables 2-5 and Figures 1-2
 of the manuscript. Use `hashes.json` to verify the downloaded attachments and
 the rebuilt data files.
 Solver tie-breaking can shift the emergency component of the 334-day totals by
