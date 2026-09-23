@@ -25,7 +25,7 @@ _WINDOW = 28              # 残差窗默认 28 天；margin_search 可覆盖
 _MODEL = "e"              # "e"：含预计应急变量的模型；"noe"：论文第 3 节纯平衡模型
 _SECOND = True            # 是否做字典序第二次求解
 _LOAD_VARIANT = "incl_d7"  # 同星期日均值是否包含 d-7
-_WARMUP_RESID = True       # 热身日（d<7）的残差是否进入库
+_WARMUP_RESID = False      # 与论文一致：热身日（d<7）的残差不进入库
 solve_times = []          # 每次 milp 调用的墙钟秒数（D4 统计用）
 
 
@@ -160,7 +160,7 @@ def run_policy(alpha, with_storage=True, tag="", qmethod="linear", eval_start=31
     Jp_out = Je_out = 0.0
     daily = []
     covered = []
-    for d in range(NDAYS):
+    for d in range(eval_end):
         if d >= 7:
             last_week = load[d - 7]
             if _LOAD_VARIANT == "excl_d7":
@@ -229,8 +229,8 @@ if __name__ == "__main__":
     pd.DataFrame([dict(policy=k, **d) for k, v in daily_store.items() for d in v]).to_csv(
         RESULTS / f"dayahead_daily_{suffix}.csv", index=False)
     # 期望值验收
-    exp = {"alpha0.85": 14748456.68, "alpha0.50": 16105821.27,
-           "point": 16022432.05, "nostorage_a85": 18525961.72}
+    exp = {"alpha0.85": 14747126.62, "alpha0.50": 16088847.53,
+           "point": 16010987.22, "nostorage_a85": 18525961.72}
     for tag, e in exp.items():
         got = report[tag]["total"]
         print(f"  验收 {tag}: 期望 {e:>14.2f} 得到 {got:>14.2f} "

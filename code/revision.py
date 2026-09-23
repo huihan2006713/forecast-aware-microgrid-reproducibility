@@ -22,6 +22,7 @@ EPS_TOL = 1e-3
 MIP_GAP = 1e-7
 TIME_LIMIT = 30.0
 solve_times = []
+solve_records = []
 
 
 def set_alpha(a):
@@ -79,12 +80,14 @@ def corrected_forecast(d, r, risk_adjusted, lib_r):
     return n_hat + np.quantile(np.asarray(lib_r[lo:]), ALPHA, axis=0)
 
 
-def _milp(c_obj, A, lo_v, hi_v, integrality, lb, ub):
+def _milp(c_obj, A, lo_v, hi_v, integrality, lb, ub, pass_name, stage):
     t0 = _time.perf_counter()
     res = milp(c_obj, integrality=integrality, bounds=Bounds(lb, ub),
                constraints=LinearConstraint(A, np.array(lo_v), np.array(hi_v)),
                options={"time_limit": TIME_LIMIT, "mip_rel_gap": MIP_GAP})
-    solve_times.append(_time.perf_counter() - t0)
+    elapsed = _time.perf_counter() - t0
+    solve_times.append(elapsed)
+    solve_records.append(dict(pass_name=pass_name, stage=stage, seconds=elapsed))
     if not res.success:
         raise RuntimeError(f"MILP 失败: {res.message}")
     return res
@@ -136,7 +139,8 @@ def solve_plan(d, n_risk):
     c1 = np.zeros(N)
     c1[idx_q] = price[d]
     c1[idx_q + 6] = 5.0 * price[d]
-    res1 = _milp(c1, A, lo_v, hi_v, integrality, lb, ub)
+    res1 = _milp(c1, A, lo_v, hi_v, integrality, lb, ub,
+                 pass_name="primary", stage="00:00")
     J_star = res1.fun
     c2 = np.zeros(N)
     c2[idx_q + 1] = 1.0
@@ -147,7 +151,7 @@ def solve_plan(d, n_risk):
     vals2 = vals + list(c1)
     A2 = coo_matrix((vals2, (rows2, cols2)), shape=(len(lo_v) + 1, N))
     res2 = _milp(c2, A2, lo_v + [-np.inf], hi_v + [J_star + EPS_TOL],
-                 integrality, lb, ub)
+                 integrality, lb, ub, pass_name="secondary", stage="00:00")
     x = res2.x if res2.success else res1.x
     return x[idx_q], x[idx_q + 1], x[idx_q + 2]
 
@@ -202,7 +206,9 @@ def solve_revision(d, seg, q_old, E_cur, n_risk):
     c1[idx] = ADJ_UP * price[d, seg:]
     c1[idx + 1] = ADJ_DN * price[d, seg:]
     c1[idx + 6] = 5.0 * price[d, seg:]
-    res1 = _milp(c1, A, lo_v, hi_v, integrality, lb, ub)
+    stage = f"{seg // 6:02d}:00"
+    res1 = _milp(c1, A, lo_v, hi_v, integrality, lb, ub,
+                 pass_name="primary", stage=stage)
     J_star = res1.fun
     c2 = np.zeros(N)
     c2[idx + 2] = 1.0
@@ -215,7 +221,7 @@ def solve_revision(d, seg, q_old, E_cur, n_risk):
     vals2 = vals + list(c1)
     A2 = coo_matrix((vals2, (rows2, cols2)), shape=(len(lo_v) + 1, N))
     res2 = _milp(c2, A2, lo_v + [-np.inf], hi_v + [J_star + EPS_TOL],
-                 integrality, lb, ub)
+                 integrality, lb, ub, pass_name="secondary", stage=stage)
     x = res2.x if res2.success else res1.x
     ap = np.zeros(T)
     an = np.zeros(T)

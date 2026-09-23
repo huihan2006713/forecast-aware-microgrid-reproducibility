@@ -3,13 +3,25 @@
 求解统计与环境信息。"""
 import json
 import platform
-import socket
 import time as _time
 from pathlib import Path
 import numpy as np
 import pandas as pd
 import scipy
 import revision as rv
+
+
+def cpu_model():
+    value = platform.processor()
+    if value and value.lower() not in {"x86_64", "amd64"}:
+        return value
+    try:
+        for line in Path("/proc/cpuinfo").read_text().splitlines():
+            if line.lower().startswith("model name"):
+                return line.split(":", 1)[1].strip()
+    except OSError:
+        pass
+    return value or "unknown"
 
 OUT = Path(__file__).resolve().parents[1] / "results"
 OUT.mkdir(exist_ok=True)
@@ -54,20 +66,23 @@ with open(OUT / "solve_stats.json", "w", encoding="utf-8") as fh:
     json.dump(stats, fh, indent=2)
 
 try:
-    import scipy.optimize._highspy as hs
-    highs_ver = getattr(hs, "HIGHS_VERSION_STRING", None) or "unknown"
+    from scipy.optimize._highspy import _core as highs_core
+    highs_ver = ".".join(str(x) for x in (
+        highs_core.HIGHS_VERSION_MAJOR,
+        highs_core.HIGHS_VERSION_MINOR,
+        highs_core.HIGHS_VERSION_PATCH,
+    ))
 except Exception:
     highs_ver = "unknown"
 env = dict(
     platform=platform.platform(),
     machine=platform.machine(),
-    cpu=platform.processor() or "unknown",
+    cpu=cpu_model(),
     python=platform.python_version(),
     numpy=np.__version__,
     pandas=pd.__version__,
     scipy=scipy.__version__,
     highs=highs_ver,
-    host=socket.gethostname(),
     eps_tol=rv.EPS_TOL,
     mip_gap=rv.MIP_GAP,
     time_limit=rv.TIME_LIMIT,

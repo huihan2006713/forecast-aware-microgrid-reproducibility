@@ -7,7 +7,7 @@
     "eval_plan": 13409526.59,
     "eval_emerg": 1367589.43,
     "coverage": 0.7753,
-    "wall_s": 121.2
+    "wall_s": 30.1
   },
   "0.85": {
     "jan_total": 526153.15,
@@ -17,7 +17,7 @@
     "eval_plan": 13698931.28,
     "eval_emerg": 1048195.34,
     "coverage": 0.8194,
-    "wall_s": 340.5
+    "wall_s": 27.5
   },
   "0.9": {
     "jan_total": 527615.41,
@@ -27,5 +27,6 @@
     "eval_plan": 14061345.1,
     "eval_emerg": 729365.53,
     "coverage": 0.8669,
-    "wall_s": 207.8
+    "wall_s": 27.3
   }
+}

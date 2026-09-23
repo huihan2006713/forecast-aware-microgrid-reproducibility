@@ -25,19 +25,28 @@ Revision Costs".
 - `requirements.txt`: pinned dependencies.
 
 ### Environment
-Python 3.12.10, NumPy 2.3.5, SciPy 1.17.0 (bundled HiGHS 1.8.0), pandas 2.2.3,
-openpyxl, Windows 11, Intel Core i7-14650HX, 32 GB RAM.
+The deposited profiling results were generated with Python 3.12.14, NumPy
+2.3.5, SciPy 1.17.0 (bundled HiGHS 1.8.0), pandas 2.2.3 and openpyxl on
+64-bit Linux using nine AMD EPYC 9V74 virtual CPU cores and 15 GiB RAM. The
+HiGHS version is
+read from `scipy.optimize._highspy._core` and recorded in
+`results/environment.json`.
 
 ### Data provenance
-The raw records are the four attachments of Problem C of the 2025 China
+The raw inputs are the four attachments of Problem C of the 2026 China
 Undergraduate Mathematical Contest in Modeling (CUMCM): Attachment 1
 (time-of-use tariff), Attachment 2 (2025 10-minute load and photovoltaic
 output), Attachment 3 (photovoltaic forecast archive released at 00:00, 06:00,
 12:00 and 18:00 with hourly resolution) and Attachment 4 (2025 real-time
-tariff). They are obtained from the official problem archive at
-https://www.mcm.edu.cn/html_cn/node/03c91a444e62eee81a3740fa97a461a6.html
-(accessed 21 September 2026). This repository does not redistribute the
-original competition records.
+tariff). The attachments contain 2025 time-indexed benchmark records supplied
+with the competition problem. The problem statement does not identify them as
+field measurements; this study therefore treats them as competition-supplied
+benchmark/simulation inputs rather than measured operational data. They are
+obtained from the official 2026 problem archive at
+https://www.mcm.edu.cn/html_cn/node/27b6e148f8113f09b0269f64a02629fb.html
+(direct archive: https://www.mcm.edu.cn/upload_cn/CUMCM2026Problems.zip;
+accessed 23 September 2026). This repository does not redistribute the
+original competition inputs.
 
 ### Reproduction
 1. Clone the repository and create a Python 3.12 environment.
@@ -57,12 +66,16 @@ original competition records.
    python code/jan_save.py
    python code/stats_two_release.py
    python code/regen_figs.py
+   python code/validate_artifacts.py
    ```
 
 Processed data are written to `data/`, numerical outputs to `results/`, and
 figures to `figures/`. The printed totals reproduce Tables 2-5 and Figures 1-2
 of the manuscript. Use `hashes.json` to verify the downloaded attachments and
-the rebuilt data files.
+the rebuilt data files. `validate_artifacts.py` parses every deposited JSON and
+checks the SHA-256 values of the four official attachments and three rebuilt
+CSV inputs. `solve_stats_2rel.json` labels primary and secondary MILP calls and
+reports their separate and combined wall-clock totals.
 Solver tie-breaking can shift the emergency component of the 334-day totals by
 at most 0.1% relative to the numbers quoted in the manuscript; all reported
 conclusions are unaffected.
